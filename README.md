@@ -52,7 +52,7 @@ src/dv_jax_ml/
 
 MIT
 
-#Demo code for Mnist and WikiText-2 perferably run this in a notebook. 
+#Demo code for Mnist and WikiText-2. Perferably run this in a notebook. 
 
 ```python
 # %%
