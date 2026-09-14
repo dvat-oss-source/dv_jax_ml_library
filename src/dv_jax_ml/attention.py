@@ -3,7 +3,7 @@ import jax.numpy as jnp
 
 
 class MultiHeadAttention:
-    def __init__(self, d_model: int, num_heads: int, max_seq_len: int = 0, dropout: float = 0.0, bias: bool = True):
+    def __init__(self, d_model: int, num_heads: int, max_seq_len: int = 0, dropout: float = 0.0, bias: bool = True, causal: bool = True):
         assert d_model % num_heads == 0, "d_model must be divisible by num_heads"
         self.d_model = d_model
         self.num_heads = num_heads
@@ -11,6 +11,7 @@ class MultiHeadAttention:
         self.max_seq_len = max_seq_len
         self.dropout = dropout
         self.bias = bias
+        self.causal = causal
 
     def init(self, key=jax.random.PRNGKey(42), batch_size=1):
         keys = jax.random.split(key, 4)
@@ -71,7 +72,7 @@ class MultiHeadAttention:
 
         scale = 1.0 / jnp.sqrt(self.headdim)
         scores = jnp.matmul(q, k.swapaxes(-1, -2)) * scale
-        if mask is None and not use_cache:
+        if mask is None and not use_cache and self.causal:
             q_idx = jnp.arange(seq_len_q)[:, None]
             k_idx = jnp.arange(seq_len_k)[None, :]
             mask = (k_idx <= q_idx)[None, None, :, :]

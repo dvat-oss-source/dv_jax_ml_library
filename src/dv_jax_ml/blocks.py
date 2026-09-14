@@ -5,12 +5,12 @@ from .normalization import LayerNorm
 from .containers import Sequential, ResBlock
 
 
-def transformer_block(d_model: int, num_heads: int, mlp_dim: int, max_seq_len: int = 0,dropout_rate: float = 0.1):
+def transformer_block(d_model: int, num_heads: int, mlp_dim: int, max_seq_len: int = 0, dropout_rate: float = 0.1, causal: bool = True):
     return Sequential(
         ResBlock(
             Sequential(
                 LayerNorm(d_model),
-                MultiHeadAttention(d_model=d_model, num_heads=num_heads,max_seq_len=max_seq_len, dropout=dropout_rate),
+                MultiHeadAttention(d_model=d_model, num_heads=num_heads, max_seq_len=max_seq_len, dropout=dropout_rate, causal=causal),
 
             )
         ),
