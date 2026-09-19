@@ -1,6 +1,6 @@
 # dv_jax_ml — A JAX-based deep learning library
 
-from .activations import RELU, LEAKY_RELU, GELU, SIGMOID, TANH, SOFTMAX
+from .activations import RELU, LEAKY_RELU, GELU, SIGMOID, TANH, SOFTMAX, SILU
 from .layers import Linear, Conv2D, Dropout_Layer, Flatten, MaxPool2D, GlobalAvgPool2D
 from .normalization import LayerNorm, BatchNorm
 from .attention import MultiHeadAttention, MultiHeadLatentAttention
