@@ -61,7 +61,43 @@ class Conv2D:
         )
         return out + params['bias']
     __call__ = apply 
+class ConvTranspose2D:
+    def __init__(self, in_channels, out_channels, kernel_size = (3,3), stride = (1,1), padding = "same", groups = 1):
+       
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.kernel_size = kernel_size if isinstance( kernel_size, tuple) else (kernel_size, kernel_size)
+        self.stride = stride if isinstance( stride, tuple) else (stride, stride)
+        self.padding = padding.upper()
+        self.groups = groups
 
+    def init(self, key=jax.random.PRNGKey(42) ):
+        key_w, key_b = jax.random.split(key)
+
+        fan_in = self.kernel_size[0] * self.kernel_size[1] * (self.in_channels //self.groups)
+
+        std = jnp.sqrt(2.0/ fan_in)
+
+        kernel_shape = (*self.kernel_size, self.out_channels // self.groups, self.in_channels)
+
+        return {
+            'weights' : jax.random.normal(key_w, kernel_shape) * std, 
+            'bias' : jnp.zeros((self.out_channels, ))
+        }
+    def apply(self, params, x, **kwargs ):
+        out = jax.lax.conv_transpose(
+            lhs=x,
+            rhs=params['weights'],
+            strides=self.stride,
+            padding=self.padding,
+            dimension_numbers=('NHWC', 'HWIO', 'NHWC'),
+            transpose_kernel=True,
+        )
+        return out + params['bias'] 
+    __call__ = apply 
+        
+
+        
 
 class Dropout_Layer:
     def __init__(self, rate =.5):
@@ -105,3 +141,7 @@ class GlobalAvgPool2D:
         return jnp.mean(x, axis=(1, 2))
 
     __call__ = apply
+
+
+    
+
