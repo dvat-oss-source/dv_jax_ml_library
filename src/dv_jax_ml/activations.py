@@ -21,3 +21,8 @@ def SOFTMAX(x, axis = -1):
     exp_x = jnp.exp(x - jnp.max(x, axis = axis, keepdims= True) )
 
     return exp_x/ jnp.sum(exp_x, axis = axis , keepdims = True)
+
+
+def SILU(x):
+    return x * jax.nn.sigmoid(x)
+
